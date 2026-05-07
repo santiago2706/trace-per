@@ -73,16 +73,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "TracePerú — Trazabilidad agrícola con pagos inmediatos" },
+      { name: "description", content: "Conectamos productores peruanos con compradores internacionales mediante trazabilidad verificable y pagos sobre Stellar." },
+      { name: "author", content: "TracePerú" },
+      { property: "og:title", content: "TracePerú — Trazabilidad agrícola con pagos inmediatos" },
+      { property: "og:description", content: "Conectamos productores peruanos con compradores internacionales mediante trazabilidad verificable y pagos sobre Stellar." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/favicon.svg",
+      },
       {
         rel: "stylesheet",
         href: appCss,
