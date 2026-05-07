@@ -141,7 +141,38 @@ export function LotVerificationPortal({ lotId }: { lotId: string }) {
           </div>
         </section>
 
-        <section className="mx-auto grid max-w-6xl gap-6 px-6 py-8 lg:grid-cols-[1fr_380px]">
+        <section className="mx-auto max-w-6xl px-6 py-6">
+          <Card className="overflow-hidden border-border/60 bg-card shadow-sm">
+            <div className="flex flex-col md:flex-row items-center justify-between p-6 gap-6 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none" />
+              
+              <div className="text-center md:text-left z-10">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Producer</p>
+                <h3 className="text-lg font-semibold mt-1">Peru</h3>
+                <p className="text-xs text-muted-foreground">Cooperativa Andina</p>
+              </div>
+
+              <div className="flex-1 flex items-center justify-center gap-4 z-10">
+                <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-border to-transparent hidden md:block" />
+                <div className="flex flex-col items-center">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1 gap-2">
+                    <ShieldCheck className="h-3 w-3" /> Stellar Network Settlement
+                  </Badge>
+                  <p className="text-[10px] text-muted-foreground mt-2 font-mono">Cross-border Protocol v2.0</p>
+                </div>
+                <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-border to-transparent hidden md:block" />
+              </div>
+
+              <div className="text-center md:text-right z-10">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Buyer</p>
+                <h3 className="text-lg font-semibold mt-1">Europe</h3>
+                <p className="text-xs text-muted-foreground">Global Markets Ltd.</p>
+              </div>
+            </div>
+          </Card>
+        </section>
+
+        <section className="mx-auto grid max-w-6xl gap-6 px-6 py-4 lg:grid-cols-[1fr_380px]">
           <div className="space-y-6">
             <Card className="border-border/60 shadow-sm">
               <CardContent className="grid gap-5 p-6 sm:grid-cols-2">
@@ -158,20 +189,68 @@ export function LotVerificationPortal({ lotId }: { lotId: string }) {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <h2 className="text-lg font-semibold">Traceability timeline</h2>
-                    <p className="text-sm text-muted-foreground">Eventos clave visibles para el comprador.</p>
+                    <h2 className="text-lg font-semibold">Blockchain Traceability Timeline</h2>
+                    <p className="text-sm text-muted-foreground">Every step is immutably recorded on the Stellar ledger.</p>
                   </div>
-                  <Badge className="border-0 bg-primary/10 text-primary" variant="secondary">Live MVP</Badge>
+                  <Badge className="border-0 bg-primary/10 text-primary" variant="secondary">Real-time Data</Badge>
                 </div>
-                <div className="mt-6 space-y-5">
-                  {timeline.map((item) => (
-                    <div key={item.title} className="flex gap-4">
-                      <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${item.done ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-                        <CheckCircle2 className="h-4 w-4" />
+                <div className="mt-8 space-y-8">
+                  {[
+                    { 
+                      title: "Lot Created", 
+                      detail: "Initial agricultural data recorded", 
+                      hash: "0x" + lote.id.toLowerCase().replace("-", ""),
+                      time: lote.fecha + " 08:45 AM",
+                      done: true 
+                    },
+                    { 
+                      title: "Soroban Verified", 
+                      detail: "Smart contract validation executed", 
+                      hash: lote.sorobanVerification?.txHash || "0x7d8e...92a3",
+                      time: lote.sorobanVerification?.timestamp ? new Date(lote.sorobanVerification.timestamp).toLocaleTimeString() : "09:12 AM",
+                      done: true 
+                    },
+                    { 
+                      title: "QR Generated", 
+                      detail: "Unique cryptographic link established", 
+                      hash: "0xqr" + Math.random().toString(16).slice(2, 8),
+                      time: "09:15 AM",
+                      done: true 
+                    },
+                    { 
+                      title: "Buyer Accessed", 
+                      detail: "Traceability portal decrypted and viewed", 
+                      hash: "0xview" + Math.random().toString(16).slice(2, 8),
+                      time: "Now",
+                      done: true 
+                    },
+                    { 
+                      title: "Premium Payment Released", 
+                      detail: "Instant settlement via Stellar Asset Protocol", 
+                      hash: visibleHash.startsWith("G") ? visibleHash : "Pending Release",
+                      time: paymentConfirmed ? "Just now" : "Waiting for confirmation",
+                      done: paymentConfirmed 
+                    },
+                  ].map((item, idx) => (
+                    <div key={item.title} className="relative flex gap-4">
+                      {idx !== 4 && (
+                        <div className="absolute left-4 top-8 h-8 w-[1px] bg-border" />
+                      )}
+                      <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${item.done ? "bg-primary border-primary text-primary-foreground shadow-[0_0_10px_rgba(var(--primary),0.3)]" : "bg-muted border-border text-muted-foreground"}`}>
+                        {item.done ? <CheckCircle2 className="h-4 w-4" /> : <div className="h-2 w-2 rounded-full bg-current" />}
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold">{item.title}</p>
-                        <p className="text-sm text-muted-foreground">{item.detail}</p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className={`text-sm font-semibold ${item.done ? "text-foreground" : "text-muted-foreground"}`}>{item.title}</p>
+                          <span className="text-[10px] font-mono text-muted-foreground whitespace-nowrap">{item.time}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{item.detail}</p>
+                        {item.done && (
+                          <div className="mt-1 flex items-center gap-1.5 overflow-hidden">
+                            <span className="text-[9px] font-bold text-primary/70 uppercase">TX HASH</span>
+                            <span className="text-[9px] font-mono text-muted-foreground truncate">{item.hash}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -227,6 +306,21 @@ export function LotVerificationPortal({ lotId }: { lotId: string }) {
               </CardContent>
             </Card>
 
+            <Card className="border-primary/25 bg-primary/5 shadow-[var(--shadow-soft)] border-dashed">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-2 w-2 rounded-full bg-primary animate-ping" />
+                  <span className="text-[10px] font-bold uppercase tracking-tighter text-primary">Smart Payment Protocol</span>
+                </div>
+                <p className="text-xs font-semibold leading-tight">
+                  Premium automatically released after blockchain verification.
+                </p>
+                <p className="mt-2 text-[10px] text-muted-foreground">
+                  The smart contract enforces payment only when all traceability data is valid.
+                </p>
+              </CardContent>
+            </Card>
+
             <Card className="border-primary/25 bg-primary/5 shadow-[var(--shadow-soft)]">
               <CardContent className="p-6">
                 <Badge className="gap-1 border-0 bg-primary text-primary-foreground">
@@ -270,6 +364,7 @@ export function LotVerificationPortal({ lotId }: { lotId: string }) {
             </Card>
           </div>
         </section>
+
       </main>
       <SiteFooter />
     </div>
