@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { Check, Copy, Loader2, LogOut, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +13,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useStore } from "@/lib/store";
 import { connectFreighterWallet, truncateAddress } from "@/lib/stellar";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { toast } from "sonner";
 
 export function WalletButton({ size = "sm" }: { size?: "sm" | "default" | "lg" }) {
+  const isHydrated = useHydrated();
   const { walletAddress, setWalletAddress, disconnectWallet } = useStore();
   const [loading, setLoading] = useState(false);
+
+  if (!isHydrated) return null;
+
 
   const onConnect = async () => {
     setLoading(true);

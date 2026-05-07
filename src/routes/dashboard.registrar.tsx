@@ -1,3 +1,5 @@
+"use client";
+
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
@@ -10,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { getLotUrl } from "@/lib/lot-url";
 import { useStore } from "@/lib/store";
 import { registerLotOnChain } from "@/lib/soroban";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/registrar")({
@@ -23,6 +26,7 @@ export const Route = createFileRoute("/dashboard/registrar")({
 });
 
 function RegistrarLote() {
+  const isHydrated = useHydrated();
   const [form, setForm] = useState({ productor: "", producto: "", cantidad: "", ubicacion: "" });
   const [imagen, setImagen] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -35,6 +39,9 @@ function RegistrarLote() {
   } | null>(null);
   const addLote = useStore((s) => s.addLote);
   const verifyLotWithSoroban = useStore((s) => s.verifyLotWithSoroban);
+
+  if (!isHydrated) return null;
+
 
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

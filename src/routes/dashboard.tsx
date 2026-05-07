@@ -1,3 +1,5 @@
+"use client";
+
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { Button } from "@/components/ui/button";
@@ -6,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Package, DollarSign, TrendingUp, PackagePlus, ExternalLink, Inbox } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { WalletButton } from "@/components/wallet-button";
+import { useHydrated } from "@/hooks/use-hydrated";
+
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -18,8 +22,11 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function DashboardLayout() {
+  const isHydrated = useHydrated();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isIndex = pathname === "/dashboard";
+  if (!isHydrated) return null;
+
   return (
     <div className="flex min-h-screen w-full bg-background">
       <DashboardSidebar />

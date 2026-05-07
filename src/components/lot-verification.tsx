@@ -1,5 +1,7 @@
+"use client";
+
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowLeft,
@@ -23,17 +25,23 @@ import { SiteFooter, SiteNavbar } from "@/components/site-navbar";
 import { getLotUrl, isRealStellarTxHash } from "@/lib/lot-url";
 import { getTxExplorerUrl, submitPremiumPayment, truncateAddress } from "@/lib/stellar";
 import { useStore } from "@/lib/store";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { toast } from "sonner";
 
 export function LotVerificationPortal({ lotId }: { lotId: string }) {
+  const isHydrated = useHydrated();
   const lotes = useStore((s) => s.lotes);
   const wallet = useStore((s) => s.walletAddress);
+
   const payLote = useStore((s) => s.payLote);
   const lote = lotes.find((l) => l.id === lotId);
   const [paying, setPaying] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
 
+  if (!isHydrated) return null;
+
   if (!lote) {
+
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <SiteNavbar />

@@ -1,5 +1,7 @@
+"use client";
+
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import {
   ArrowLeft,
@@ -21,6 +23,7 @@ import { SiteFooter, SiteNavbar } from "@/components/site-navbar";
 import { getLotUrl } from "@/lib/lot-url";
 import { useStore } from "@/lib/store";
 import { getTxExplorerUrl, submitPremiumPayment, truncateAddress } from "@/lib/stellar";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/comprador/$loteId")({
@@ -34,9 +37,13 @@ export const Route = createFileRoute("/comprador/$loteId")({
 });
 
 function VistaComprador() {
+  const isHydrated = useHydrated();
   const { loteId } = Route.useParams();
   const lotes = useStore((s) => s.lotes);
   const wallet = useStore((s) => s.walletAddress);
+
+  if (!isHydrated) return null;
+
   const payLote = useStore((s) => s.payLote);
   const lote = lotes.find((l) => l.id === loteId) || lotes[0];
   const [paying, setPaying] = useState(false);

@@ -41,10 +41,12 @@ async function mockSorobanCall(lotId: string): Promise<SorobanVerificationResult
  * Uses a simulation mode for the hackathon MVP to ensure perfect stability.
  */
 export async function registerLotOnChain(lotId: string): Promise<SorobanVerificationResult> {
+  if (typeof window === "undefined") return await mockSorobanCall(lotId);
   console.log(`[Soroban] Registering lot ${lotId} on-chain...`);
   
   // Check if Freighter is connected (good for demo to show real wallet interaction)
   const connection = await isConnected();
+
   if (connection.isConnected) {
     try {
       await requestAccess();

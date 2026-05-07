@@ -39,6 +39,8 @@ export const truncateAddress = (addr: string) =>
   `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 
 export async function connectFreighterWallet() {
+  if (typeof window === "undefined") return "";
+  
   const connection = await isConnected();
   if (!connection.isConnected) {
     throw new Error("Instala o activa Freighter Wallet para continuar.");
@@ -85,6 +87,8 @@ export async function submitPremiumPayment({
     .addMemo(Memo.text(`TracePeru ${lotId}`))
     .setTimeout(60)
     .build();
+
+  if (typeof window === "undefined") throw new Error("Browser only");
 
   const signed = await signTransaction(transaction.toXDR(), {
     address: sourceAddress,
