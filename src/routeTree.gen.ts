@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LotIdRouteImport } from './routes/lot.$id'
 import { Route as DashboardRegistrarRouteImport } from './routes/dashboard.registrar'
 import { Route as CompradorLoteIdRouteImport } from './routes/comprador.$loteId'
 
@@ -22,6 +23,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LotIdRoute = LotIdRouteImport.update({
+  id: '/lot/$id',
+  path: '/lot/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRegistrarRoute = DashboardRegistrarRouteImport.update({
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteWithChildren
   '/comprador/$loteId': typeof CompradorLoteIdRoute
   '/dashboard/registrar': typeof DashboardRegistrarRoute
+  '/lot/$id': typeof LotIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/comprador/$loteId': typeof CompradorLoteIdRoute
   '/dashboard/registrar': typeof DashboardRegistrarRoute
+  '/lot/$id': typeof LotIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,24 +61,37 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteWithChildren
   '/comprador/$loteId': typeof CompradorLoteIdRoute
   '/dashboard/registrar': typeof DashboardRegistrarRoute
+  '/lot/$id': typeof LotIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/comprador/$loteId' | '/dashboard/registrar'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/comprador/$loteId'
+    | '/dashboard/registrar'
+    | '/lot/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/comprador/$loteId' | '/dashboard/registrar'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/comprador/$loteId'
+    | '/dashboard/registrar'
+    | '/lot/$id'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/comprador/$loteId'
     | '/dashboard/registrar'
+    | '/lot/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   CompradorLoteIdRoute: typeof CompradorLoteIdRoute
+  LotIdRoute: typeof LotIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -87,6 +108,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lot/$id': {
+      id: '/lot/$id'
+      path: '/lot/$id'
+      fullPath: '/lot/$id'
+      preLoaderRoute: typeof LotIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/registrar': {
@@ -122,7 +150,18 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
   CompradorLoteIdRoute: CompradorLoteIdRoute,
+  LotIdRoute: LotIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

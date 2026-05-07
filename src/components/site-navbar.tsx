@@ -15,7 +15,7 @@ export function SiteNavbar() {
         <nav className="hidden items-center gap-8 md:flex">
           <Link to="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Inicio</Link>
           <Link to="/dashboard" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
-          <Link to="/comprador/$loteId" params={{ loteId: "TP-001" }} className="text-sm text-muted-foreground transition-colors hover:text-foreground">Demo Comprador</Link>
+          <Link to="/lot/$id" params={{ id: "TP-001" }} className="text-sm text-muted-foreground transition-colors hover:text-foreground">Demo Comprador</Link>
         </nav>
         <WalletButton />
       </div>

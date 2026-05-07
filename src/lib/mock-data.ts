@@ -7,6 +7,7 @@ export type Lote = {
   fecha: string;
   estado: "Registrado" | "Validado" | "Pagado";
   hash: string;
+  walletAddress?: string;
   imagen?: string;
   premium: number;
 };

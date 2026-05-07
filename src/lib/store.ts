@@ -5,27 +5,15 @@ import { mockLotes, type Lote } from "./mock-data";
 type Store = {
   lotes: Lote[];
   walletAddress: string | null;
-  addLote: (lote: Omit<Lote, "id" | "hash" | "fecha" | "estado" | "premium"> & { imagen?: string }) => Lote;
-  payLote: (id: string) => string;
-  connectWallet: () => string;
+  addLote: (
+    lote: Omit<Lote, "id" | "hash" | "fecha" | "estado" | "premium"> & {
+      imagen?: string;
+    },
+  ) => Lote;
+  payLote: (id: string, txHash: string, walletAddress: string) => void;
+  setWalletAddress: (address: string) => void;
   disconnectWallet: () => void;
   reset: () => void;
-};
-
-const randHash = () => {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let s = "G";
-  for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
-  s += "…";
-  for (let i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)];
-  return s;
-};
-
-const randAddress = () => {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let s = "G";
-  for (let i = 0; i < 55; i++) s += chars[Math.floor(Math.random() * chars.length)];
-  return s;
 };
 
 export const useStore = create<Store>()(
@@ -45,31 +33,31 @@ export const useStore = create<Store>()(
           imagen: data.imagen,
           fecha: new Date().toISOString().slice(0, 10),
           estado: "Registrado",
-          hash: randHash(),
+          hash: "Pendiente de pago Stellar",
           premium: 0,
         };
         set({ lotes: [lote, ...all] });
         return lote;
       },
-      payLote: (id) => {
-        const txHash = `STELLAR-TX-${Math.floor(10000000 + Math.random() * 90000000)}`;
+      payLote: (id, txHash, walletAddress) => {
         set({
           lotes: get().lotes.map((l) =>
-            l.id === id ? { ...l, estado: "Pagado", premium: 120 } : l,
+            l.id === id
+              ? {
+                  ...l,
+                  estado: "Pagado",
+                  premium: 120,
+                  hash: txHash,
+                  walletAddress,
+                }
+              : l,
           ),
         });
-        return txHash;
       },
-      connectWallet: () => {
-        const addr = randAddress();
-        set({ walletAddress: addr });
-        return addr;
-      },
+      setWalletAddress: (address) => set({ walletAddress: address }),
       disconnectWallet: () => set({ walletAddress: null }),
       reset: () => set({ lotes: mockLotes, walletAddress: null }),
     }),
     { name: "traceperu-store" },
   ),
 );
-
-export const truncateAddress = (addr: string) => `${addr.slice(0, 6)}…${addr.slice(-4)}`;

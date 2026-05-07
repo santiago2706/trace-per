@@ -119,7 +119,7 @@ function DashboardHome() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Button asChild size="sm" variant="ghost" className="gap-1">
-                        <Link to="/lote/$loteId" params={{ loteId: l.id }}>
+                        <Link to="/lot/$id" params={{ id: l.id }}>
                           Ver <ExternalLink className="h-3 w-3" />
                         </Link>
                       </Button>
