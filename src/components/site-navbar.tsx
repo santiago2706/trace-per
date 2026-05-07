@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Leaf, Wallet } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Leaf } from "lucide-react";
+import { WalletButton } from "@/components/wallet-button";
 
 export function SiteNavbar() {
   return (
@@ -17,10 +17,7 @@ export function SiteNavbar() {
           <Link to="/dashboard" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Dashboard</Link>
           <Link to="/comprador/$loteId" params={{ loteId: "TP-001" }} className="text-sm text-muted-foreground transition-colors hover:text-foreground">Demo Comprador</Link>
         </nav>
-        <Button size="sm" className="gap-2">
-          <Wallet className="h-4 w-4" />
-          Conectar Wallet
-        </Button>
+        <WalletButton />
       </div>
     </header>
   );
