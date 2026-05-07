@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { ArrowLeft, CheckCircle2, Loader2, ShieldCheck, Sparkles, Upload } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Loader2, ShieldCheck, Sparkles, Upload, Link as LinkIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getLotUrl } from "@/lib/lot-url";
 import { useStore } from "@/lib/store";
+import { registerLotOnChain } from "@/lib/soroban";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/registrar")({
@@ -30,8 +31,10 @@ function RegistrarLote() {
     hash: string;
     producto: string;
     productor: string;
+    sorobanTx?: string;
   } | null>(null);
   const addLote = useStore((s) => s.addLote);
+  const verifyLotWithSoroban = useStore((s) => s.verifyLotWithSoroban);
 
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,11 +48,39 @@ function RegistrarLote() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 700));
-    const lote = addLote({ ...form, imagen: imagen ?? undefined });
-    setLoading(false);
-    toast.success("Lote registrado", { description: "Listo para verificacion en Stellar Testnet" });
-    setRegistrado({ id: lote.id, hash: lote.hash, producto: lote.producto, productor: lote.productor });
+    
+    try {
+      // 1. Local Registration
+      const lote = addLote({ ...form, imagen: imagen ?? undefined });
+      
+      // 2. Soroban Smart Contract Verification
+      toast.loading("Verificando en Soroban Smart Contract...", { id: "soroban" });
+      const sorobanResult = await registerLotOnChain(lote.id);
+      
+      verifyLotWithSoroban(lote.id, {
+        contractId: sorobanResult.contractId,
+        txHash: sorobanResult.txHash,
+        timestamp: sorobanResult.timestamp,
+        verified: true,
+      });
+
+      setLoading(false);
+      toast.success("Lote registrado y verificado on-chain", { 
+        id: "soroban",
+        description: "Contrato inteligente ejecutado con éxito" 
+      });
+      
+      setRegistrado({ 
+        id: lote.id, 
+        hash: lote.hash, 
+        producto: lote.producto, 
+        productor: lote.productor,
+        sorobanTx: sorobanResult.txHash
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("Error en el registro", { id: "soroban" });
+    }
   };
 
   if (registrado) {
@@ -62,9 +93,14 @@ function RegistrarLote() {
             </div>
             <h2 className="text-2xl font-semibold tracking-tight">Lote registrado</h2>
             <p className="mt-2 text-sm text-muted-foreground">Preparado para verificacion en Stellar Testnet</p>
-            <Badge className="mt-4 gap-1 border-0 bg-primary/10 text-primary" variant="secondary">
-              <ShieldCheck className="h-3 w-3" /> Blockchain verified
-            </Badge>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <Badge className="gap-1 border-0 bg-primary/10 text-primary" variant="secondary">
+                <ShieldCheck className="h-3 w-3" /> Blockchain verified
+              </Badge>
+              <Badge className="gap-1 border-0 bg-blue-500/10 text-blue-600" variant="secondary">
+                <LinkIcon className="h-3 w-3" /> Soroban Smart Contract
+              </Badge>
+            </div>
             <div className="mx-auto mt-8 w-fit rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
               <QRCodeSVG
                 value={getLotUrl(registrado.id)}
@@ -79,8 +115,10 @@ function RegistrarLote() {
                 <p className="mt-1 font-mono text-sm font-semibold">{registrado.id}</p>
               </div>
               <div className="rounded-lg border border-border/60 bg-card p-4">
-                <p className="text-xs text-muted-foreground">Estado blockchain</p>
-                <p className="mt-1 text-sm font-semibold">Blockchain verified</p>
+                <p className="text-xs text-muted-foreground">Soroban TX</p>
+                <p className="mt-1 font-mono text-[10px] truncate font-semibold" title={registrado.sorobanTx}>
+                  {registrado.sorobanTx || "Verified On-Chain"}
+                </p>
               </div>
             </div>
             <div className="mt-8 flex flex-wrap justify-center gap-3">

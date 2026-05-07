@@ -1,3 +1,10 @@
+export type SorobanVerification = {
+  contractId: string;
+  txHash: string;
+  timestamp: string;
+  verified: boolean;
+};
+
 export type Lote = {
   id: string;
   productor: string;
@@ -10,6 +17,7 @@ export type Lote = {
   walletAddress?: string;
   imagen?: string;
   premium: number;
+  sorobanVerification?: SorobanVerification;
 };
 
 export const mockLotes: Lote[] = [
@@ -23,6 +31,12 @@ export const mockLotes: Lote[] = [
     estado: "Pagado",
     hash: "GA7XK9...JQ2P",
     premium: 320,
+    sorobanVerification: {
+      contractId: "CDE...456",
+      txHash: "0xabc...123",
+      timestamp: "2026-04-12T10:30:00Z",
+      verified: true,
+    },
   },
   {
     id: "TP-002",

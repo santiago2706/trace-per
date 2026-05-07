@@ -1,16 +1,17 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { mockLotes, type Lote } from "./mock-data";
+import { mockLotes, type Lote, type SorobanVerification } from "./mock-data";
 
 type Store = {
   lotes: Lote[];
   walletAddress: string | null;
   addLote: (
-    lote: Omit<Lote, "id" | "hash" | "fecha" | "estado" | "premium"> & {
+    lote: Omit<Lote, "id" | "hash" | "fecha" | "estado" | "premium" | "sorobanVerification"> & {
       imagen?: string;
     },
   ) => Lote;
   payLote: (id: string, txHash: string, walletAddress: string) => void;
+  verifyLotWithSoroban: (id: string, verification: SorobanVerification) => void;
   setWalletAddress: (address: string) => void;
   disconnectWallet: () => void;
   reset: () => void;
@@ -51,6 +52,13 @@ export const useStore = create<Store>()(
                   walletAddress,
                 }
               : l,
+          ),
+        });
+      },
+      verifyLotWithSoroban: (id, verification) => {
+        set({
+          lotes: get().lotes.map((l) =>
+            l.id === id ? { ...l, sorobanVerification: verification } : l
           ),
         });
       },
