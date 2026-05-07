@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRegistrarRouteImport } from './routes/dashboard.registrar'
+import { Route as CompradorLoteIdRouteImport } from './routes/comprador.$loteId'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -28,34 +29,48 @@ const DashboardRegistrarRoute = DashboardRegistrarRouteImport.update({
   path: '/registrar',
   getParentRoute: () => DashboardRoute,
 } as any)
+const CompradorLoteIdRoute = CompradorLoteIdRouteImport.update({
+  id: '/comprador/$loteId',
+  path: '/comprador/$loteId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/comprador/$loteId': typeof CompradorLoteIdRoute
   '/dashboard/registrar': typeof DashboardRegistrarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/comprador/$loteId': typeof CompradorLoteIdRoute
   '/dashboard/registrar': typeof DashboardRegistrarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/comprador/$loteId': typeof CompradorLoteIdRoute
   '/dashboard/registrar': typeof DashboardRegistrarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/dashboard/registrar'
+  fullPaths: '/' | '/dashboard' | '/comprador/$loteId' | '/dashboard/registrar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/dashboard/registrar'
-  id: '__root__' | '/' | '/dashboard' | '/dashboard/registrar'
+  to: '/' | '/dashboard' | '/comprador/$loteId' | '/dashboard/registrar'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/comprador/$loteId'
+    | '/dashboard/registrar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  CompradorLoteIdRoute: typeof CompradorLoteIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -81,6 +96,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRegistrarRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/comprador/$loteId': {
+      id: '/comprador/$loteId'
+      path: '/comprador/$loteId'
+      fullPath: '/comprador/$loteId'
+      preLoaderRoute: typeof CompradorLoteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -99,6 +121,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  CompradorLoteIdRoute: CompradorLoteIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -4,9 +4,10 @@ import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, Upload, Sparkles } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Upload, Sparkles, Loader2 } from "lucide-react";
+import { useStore } from "@/lib/store";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard/registrar")({
   head: () => ({
@@ -21,7 +22,9 @@ export const Route = createFileRoute("/dashboard/registrar")({
 function RegistrarLote() {
   const [form, setForm] = useState({ productor: "", producto: "", cantidad: "", ubicacion: "" });
   const [imagen, setImagen] = useState<string | null>(null);
-  const [registrado, setRegistrado] = useState<{ id: string; hash: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [registrado, setRegistrado] = useState<{ id: string; hash: string; producto: string; productor: string } | null>(null);
+  const addLote = useStore((s) => s.addLote);
 
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,11 +35,14 @@ function RegistrarLote() {
     }
   };
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const id = `TP-${Math.floor(100 + Math.random() * 900)}`;
-    const hash = `G${Math.random().toString(36).slice(2, 8).toUpperCase()}…${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
-    setRegistrado({ id, hash });
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 1200));
+    const lote = addLote({ ...form, imagen: imagen ?? undefined });
+    setLoading(false);
+    toast.success("Lote registrado en Stellar Testnet", { description: lote.id });
+    setRegistrado({ id: lote.id, hash: lote.hash, producto: lote.producto, productor: lote.productor });
   };
 
   if (registrado) {
@@ -50,7 +56,12 @@ function RegistrarLote() {
             <h2 className="text-2xl font-semibold tracking-tight">¡Lote registrado!</h2>
             <p className="mt-2 text-sm text-muted-foreground">Registrado en Stellar Testnet</p>
             <div className="mx-auto mt-8 w-fit rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
-              <QRCodeSVG value={`https://traceperu.app/comprador/${registrado.id}`} size={200} bgColor="transparent" fgColor="oklch(0.18 0.02 240)" />
+              <QRCodeSVG
+                value={JSON.stringify({ id: registrado.id, producto: registrado.producto, productor: registrado.productor })}
+                size={200}
+                bgColor="transparent"
+                fgColor="oklch(0.18 0.02 240)"
+              />
             </div>
             <div className="mt-6 grid grid-cols-2 gap-4 text-left">
               <div className="rounded-lg border border-border/60 bg-card p-4">
@@ -122,8 +133,8 @@ function RegistrarLote() {
                 <input type="file" accept="image/*" className="hidden" onChange={onFile} />
               </label>
             </div>
-            <Button type="submit" className="w-full gap-2" size="lg">
-              Registrar en Stellar Testnet
+            <Button type="submit" className="w-full gap-2" size="lg" disabled={loading}>
+              {loading ? (<><Loader2 className="h-4 w-4 animate-spin" /> Registrando en Stellar…</>) : "Registrar en Stellar Testnet"}
             </Button>
           </form>
         </CardContent>

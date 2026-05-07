@@ -3,8 +3,9 @@ import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Package, DollarSign, TrendingUp, PackagePlus, ExternalLink } from "lucide-react";
-import { mockLotes } from "@/lib/mock-data";
+import { Package, DollarSign, TrendingUp, PackagePlus, ExternalLink, Inbox } from "lucide-react";
+import { useStore } from "@/lib/store";
+import { WalletButton } from "@/components/wallet-button";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -28,16 +29,7 @@ function DashboardLayout() {
             <p className="text-xs text-muted-foreground">Productor</p>
             <h1 className="text-sm font-semibold">Cooperativa Andina</h1>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 rounded-full border border-border/60 bg-background px-3 py-1.5 text-xs sm:flex">
-              <span className="h-2 w-2 rounded-full bg-primary" />
-              <span className="font-medium">Wallet conectada</span>
-              <span className="text-muted-foreground">GA7X…JQ2P</span>
-            </div>
-            <Button size="sm" variant="outline" className="gap-2">
-              <Wallet className="h-4 w-4" /> Stellar Testnet
-            </Button>
-          </div>
+          <WalletButton />
         </header>
         <main className="flex-1 p-6 md:p-8">
           {isIndex ? <DashboardHome /> : <Outlet />}
@@ -48,10 +40,13 @@ function DashboardLayout() {
 }
 
 function DashboardHome() {
+  const lotes = useStore((s) => s.lotes);
+  const pagados = lotes.filter((l) => l.estado === "Pagado");
+  const premium = lotes.reduce((acc, l) => acc + l.premium, 0);
   const stats = [
-    { label: "Lotes registrados", value: "24", icon: Package, trend: "+3 esta semana" },
-    { label: "Pagos recibidos", value: "$12,480", icon: DollarSign, trend: "+18% mes" },
-    { label: "Premium generado", value: "$3,210", icon: TrendingUp, trend: "+24% mes" },
+    { label: "Lotes registrados", value: String(lotes.length), icon: Package, trend: `${lotes.length} en total` },
+    { label: "Pagos recibidos", value: `$${(pagados.length * 120).toLocaleString()}`, icon: DollarSign, trend: `${pagados.length} pagos` },
+    { label: "Premium generado", value: `$${premium.toLocaleString()}`, icon: TrendingUp, trend: "Stellar Testnet" },
   ];
   return (
     <div className="mx-auto max-w-6xl space-y-8">
@@ -88,6 +83,18 @@ function DashboardHome() {
           <Button size="sm" variant="ghost">Ver todos</Button>
         </CardHeader>
         <CardContent className="p-0">
+          {lotes.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-3 p-16 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <Inbox className="h-5 w-5" />
+              </div>
+              <p className="text-sm font-medium">Aún no hay lotes</p>
+              <p className="text-xs text-muted-foreground">Registra tu primer lote para empezar.</p>
+              <Button asChild size="sm" className="mt-2 gap-2">
+                <Link to="/dashboard/registrar"><PackagePlus className="h-4 w-4" /> Registrar lote</Link>
+              </Button>
+            </div>
+          ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -101,8 +108,8 @@ function DashboardHome() {
                 </tr>
               </thead>
               <tbody>
-                {mockLotes.map((l) => (
-                  <tr key={l.id} className="border-b border-border/40 last:border-0 hover:bg-muted/40">
+                {lotes.map((l) => (
+                  <tr key={l.id} className="border-b border-border/40 transition-colors last:border-0 hover:bg-muted/40">
                     <td className="px-6 py-4 font-mono text-xs font-medium">{l.id}</td>
                     <td className="px-6 py-4">{l.producto}</td>
                     <td className="px-6 py-4 text-muted-foreground">{l.cantidad}</td>
@@ -122,6 +129,7 @@ function DashboardHome() {
               </tbody>
             </table>
           </div>
+          )}
         </CardContent>
       </Card>
     </div>
