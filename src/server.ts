@@ -66,6 +66,7 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   return brandedErrorResponse();
 }
 
+// Vercel compatibility - handle Node.js request/response pattern
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
