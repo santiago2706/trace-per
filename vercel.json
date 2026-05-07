@@ -8,6 +8,6 @@
   "framework": null,
   "routes": [
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/api/index.ts" }
+    { "src": "/(.*)", "dest": "/api/server.js" }
   ]
 }
