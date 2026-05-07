@@ -5,6 +5,7 @@
   "env": {
     "NODE_ENV": "production"
   },
+  "framework": null,
   "routes": [
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/api/index.ts" }
