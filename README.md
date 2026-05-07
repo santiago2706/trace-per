@@ -1,160 +1,124 @@
-TracePerú 🌱
-Agricultural Traceability + Instant Payments on Stellar
+# TracePerú 🌱 
+### Agricultural Traceability + Instant Payments on Stellar
 
-TracePerú is a lightweight blockchain-powered MVP that helps agricultural producers register product lots, generate verifiable traceability records, and simulate premium payments using the Stellar Testnet.
+**TracePerú** es un MVP ligero impulsado por blockchain que ayuda a los productores agrícolas a registrar lotes de productos, generar registros de trazabilidad verificables y simular pagos de primas utilizando la **Stellar Testnet**.
 
-Built for hackathon/demo purposes, the platform focuses on simplicity, transparency, and accessibility for rural agricultural supply chains.
+Construido para fines de demostración y hackatones, la plataforma se centra en la simplicidad, la transparencia y la accesibilidad para las cadenas de suministro agrícolas rurales.
 
-🚀 Problem
+---
 
-Small agricultural producers often receive lower prices because they cannot easily prove:
+## 🚀 El Problema
 
-product origin
-sustainability
-legality
-traceability
+Los pequeños productores agrícolas a menudo reciben precios más bajos porque no pueden demostrar fácilmente:
 
-International buyers increasingly demand transparent and verifiable supply chains, especially for products such as:
+* **Origen del producto**
+* **Sostenibilidad**
+* **Legalidad**
+* **Trazabilidad**
 
-cacao
-coffee
-quinoa
+Los compradores internacionales exigen cada vez más cadenas de suministro transparentes y verificables, especialmente para productos como el **cacao, café y quinua**. Los sistemas actuales suelen ser costosos, complejos, centralizados e inaccesibles para el pequeño productor.
 
-Current systems are often:
+---
 
-expensive
-difficult to use
-centralized
-inaccessible for small producers
-💡 Solution
+## 💡 La Solución
 
-TracePerú provides a simple traceability workflow powered by Stellar.
+TracePerú proporciona un flujo de trabajo de trazabilidad simple potenciado por Stellar. La plataforma permite a los productores:
 
-The platform allows producers to:
+1.  **Conectar una Wallet Stellar** (Freighter).
+2.  **Registrar lotes agrícolas** con metadatos clave.
+3.  **Generar trazabilidad basada en QR**.
+4.  **Verificar registros públicamente**.
+5.  **Simular pagos de primas** en la red de prueba de Stellar.
 
-Connect a Stellar wallet
-Register agricultural lots
-Generate QR-based traceability
-Verify records publicly
-Simulate premium payments on Stellar Testnet
+Cada lote genera un ID único, una página de verificación pública, un código QR y una referencia de transacción en la blockchain.
 
-Each lot generates:
+---
 
-a unique lot ID
-a public verification page
-a QR code
-a blockchain transaction reference
-✨ Features
-✅ Wallet Connection
-Freighter Wallet integration
-Stellar Testnet support
-✅ Lot Registration
+## ✨ Características Principales
 
-Register:
+* **✅ Conexión de Billetera:** Integración con Freighter Wallet y soporte para Stellar Testnet.
+* **✅ Registro de Lotes:** Registro detallado de productor, producto, cantidad, ubicación e imágenes.
+* **✅ Verificación QR:** Cada lote genera un código QR vinculado a una página de verificación pública.
+* **✅ Integración con Stellar Testnet:** Soporte para transacciones reales en Testnet, visualización de hashes de transacciones y sensación de verificación blockchain real.
+* **✅ Flujo de Verificación del Comprador:** Página pública que muestra info del producto, detalles del productor, estado de pago y estatus de verificación.
+* **✅ UI/UX Moderna:** Diseño responsivo con estética *Agritech + Fintech* limpia, utilizando un dashboard estilo startup.
 
-producer
-product
-quantity
-location
-image
-✅ QR Verification
+---
 
-Each lot generates a QR code linked to a public verification page.
+## 🛠 Tech Stack
 
-Example:
+| Tecnología | Propósito |
+| :--- | :--- |
+| **Next.js** | Framework de Frontend |
+| **TypeScript** | Tipado seguro |
+| **TailwindCSS** | Estilizado de UI |
+| **shadcn/ui** | Componentes de interfaz |
+| **Supabase** | Base de datos y almacenamiento de imágenes |
+| **Stellar SDK** | Integración con la Blockchain de Stellar |
+| **Freighter** | Billetera para la firma de transacciones |
+| **Vercel** | Despliegue y Hosting |
 
-/lot/LOT-001
-✅ Stellar Testnet Integration
-real Testnet transaction support
-transaction hash visualization
-blockchain verification feel
-✅ Buyer Verification Flow
+---
 
-Public traceability page displaying:
+## 🔗 Integración con Stellar
 
-product information
-producer details
-transaction hash
-payment status
-verification status
-✅ Modern UI/UX
-responsive design
-startup-style dashboard
-clean agritech + fintech aesthetic
-🛠 Tech Stack
-Technology	Purpose
-Next.js	Frontend framework
-TypeScript	Type safety
-TailwindCSS	Styling
-shadcn/ui	UI components
-Supabase	Database & storage
-Freighter Wallet	Stellar wallet
-Stellar SDK	Blockchain integration
-Vercel	Deployment
-🔗 Stellar Integration
+TracePerú utiliza la **Stellar Testnet** para simular flujos de pago y verificación ligera.
+- **Implementado:** Conexión de wallet, simulación de transacciones, visualización de hash de transacción y UX de verificación blockchain.
+- **Enfoque:** El proyecto evita intencionalmente una arquitectura compleja de contratos inteligentes para mantener la velocidad del MVP y la facilidad de uso.
 
-TracePerú uses the Stellar Testnet to simulate lightweight blockchain verification and payment flows.
+---
 
-Implemented:
+## 📦 Instalación
 
-wallet connection
-transaction simulation
-transaction hash display
-blockchain verification UX
+Sigue estos pasos para ejecutar el proyecto localmente:
 
-The project intentionally avoids complex smart contract architecture to maintain simplicity and MVP speed.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/TU_USUARIO/traceperu-mvp.git](https://github.com/TU_USUARIO/traceperu-mvp.git)
+Instalar dependencias:
 
-📦 Installation
-
-Clone repository:
-
-git clone https://github.com/YOUR_USERNAME/traceperu-mvp.git
-
-Install dependencies:
-
+Bash
 npm install
+Configurar variables de entorno:
+Crea un archivo .env.local con tus credenciales de Supabase y Stellar (si aplica).
 
-Run locally:
+Ejecutar en modo desarrollo:
 
+Bash
 npm run dev
-🌐 Deployment
+📸 Flujo de la Demo
+Conectar Freighter Wallet.
 
-Deployed using:
+Registrar un Lote Agrícola.
 
-Vercel
-📸 Demo Flow
-Connect Freighter Wallet
-Register agricultural lot
-Generate QR code
-Open public verification page
-Simulate Stellar payment
-Display transaction hash
-🎯 MVP Scope
+Generar el Código QR.
 
-This project was intentionally designed as a lightweight hackathon MVP.
+Abrir la Página de Verificación Pública.
 
-The goal was to demonstrate:
+Simular el Pago Stellar.
 
-blockchain usability
-agricultural traceability
-QR verification
-Stellar-powered payments
-clean startup UX
+Visualizar el Hash de la Transacción.
 
-Without:
+🎯 Alcance del MVP
+Este proyecto fue diseñado como un MVP ligero para hackatón. El objetivo fue demostrar:
 
-complex backend systems
-advanced smart contracts
-enterprise infrastructure
-🚧 Future Improvements
+Usabilidad de la blockchain en el campo.
 
-Potential future features:
+Trazabilidad agrícola real.
 
-real cooperative onboarding
-live buyer marketplace
-Soroban smart contracts
-ESG certification layers
-stablecoin payments
-lot tokenization
-multilingual support
-offline-first support
+Verificación mediante QR.
+
+Pagos instantáneos vía Stellar.
+
+🚧 Mejoras Futuras
+[ ] Onboarding real para cooperativas agrarias.
+
+[ ] Marketplace en vivo para compradores internacionales.
+
+[ ] Implementación de Smart Contracts con Soroban.
+
+[ ] Capas de certificación ESG (Ambiental, Social y de Gobernanza).
+
+[ ] Tokenización de lotes agrícolas.
+
+[ ] Soporte "Offline-first" para zonas rurales con baja conectividad.
